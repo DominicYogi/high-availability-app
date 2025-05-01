@@ -1,0 +1,25 @@
+# .github/workflows/docker-ci.yml
+
+name: Build and Test Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      run: docker build -t high-availability-test .
+
+    - name: Run container to test
+      run: docker run --rm -e INSTANCE_NAME=ci-test -p 4000:3000 high-availability-test
